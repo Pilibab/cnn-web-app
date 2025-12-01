@@ -1,34 +1,133 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/HandwritingGrid.css";
 
-const initial_cell_color = 'white';
+const initial_cell_color = 255;
 const initial_border_color = 'black';
-const on_down_color = 'black';
+const on_down_color = 0;
 
-const Cell = ({isMouseDown}) =>  {
-    const [color, setColor] = useState(initial_cell_color);
+// generate initial grid color array
 
-    const paint = () => setColor(on_down_color);
+const Cell = ({ row, col, color, isMouseDown, onPaint }) =>  {
+    const cssColor = `rgb(${color}, ${color}, ${color})`;
 
     return (
         <div
-        className="cell"
-        onMouseEnter={() => isMouseDown && paint()}
-        onMouseDown={paint}
-        style={{
-            "--color": color,
-            "--line_color": initial_border_color
-        }}
+            className="cell"
+
+            // ! why do we need onMouseEnter if we will just activate 
+            // ! the paint if mouse is down 
+
+            /* 
+            * Yes — you need onMouseEnter (or onMouseOver) while isMouseDown is true to 
+            * implement drawing while dragging. onMouseDown paints the initial cell; 
+            * onMouseEnter paints new cells as the cursor moves over them while the mouse button 
+            * remains pressed. Leave both.
+            */
+            onMouseEnter={() => isMouseDown && onPaint(row, col)}
+            onMouseDown={ e => {
+                e.preventDefault();     // ^ NOTE: avoids text selection issues
+                onPaint(row, col);
+            }}
+            style={{ backgroundColor: cssColor }}
         />
     );
 }
 
 const Grid = ({rows = 28, cols = 28}) => {
-    const [isMouseDown , setIsMouseDown] = useState(false);
+
+    useEffect(() => {
+        const onUp = () => setIsMouseDown(false);
+        window.addEventListener("mouseup", onUp);
+        return () => window.removeEventListener("mouseup", onUp);
+    }, []); 
+    
+    const createGridArray = (rows, cols) => {
+        const gridArray = [];
+        for (let r = 0; r < rows; r++) {
+            const row = [];
+
+            for (let c = 0; c < cols; c++) {
+                // ! single number? should i push it 3 times ?
+                row.push(initial_cell_color);
+
+            }       
+            gridArray.push(row);
+        }
+        return gridArray;
+    }
+
+    const resetGridArray = () => setGridColor(createGridArray(rows, cols))
+
+    const onPaint = (r,c) => {
+        /**
+         * parameters: row, col
+         * set the color of the cell at (row, col) to on_down_color 
+         */
+        paintAt(r, c, { radius, hardness, target: 0 });
+    }
+
+    const paintAt = (r0, c0 , { radius = 1, hardness = 1, target = 0 } = {}) => {
+    /**
+     * parameters:  r0, c0:     center cell coordinates
+     *              radius:     radius of effect
+     *              hardness:   hardness of effect  / alpha value
+     *              target:     target color value (0 -255) /rgb  
+     * 
+     * returns:     next:       updated grid color array
+     * 
+     * Description:  Paints the grid with a radial gradient effect centered at (r0, c0).
+     */
+
+
+    // we dont need { radius = 1, hardness = 1, target = 0 } "= {}" right? since
+    //      answer: “If no object is passed, use an empty object, then destructure 
+    //              defaults from that.” 
+
+    // TODO: fix hardness 
+
+        setGridColor((prev) => {
+
+            // get lenght of grid 
+            const rowsCount = prev.length;
+            const colsCount = prev[0].length;           // checks the length of the first row
+
+            // clone prevGrid to newGrid
+            const next = prev.map(row => row.slice());  // loops thru array 
+
+            const rMin = Math.max(0, r0 - radius);
+            const rMax = Math.min(rowsCount - 1, r0 + radius);
+            const cMin = Math.max(0, c0 - radius);
+            const cMax = Math.min(colsCount - 1, c0 + radius);
+
+            for (let r = rMin; r <= rMax; r++) {
+                for (let c = cMin; c <= cMax; c++) {
+                    const dx = r - r0;
+                    const dy = c - c0;
+                    const d = Math.sqrt(dx*dx + dy*dy);
+                    if (d > radius) continue;
+
+                    // falloff: linear then apply hardness exponent
+                    let strength = 1 - d / radius;       // 1 at center, 0 at edge
+                    strength = Math.pow(strength, hardness); // hardness >1 = sharper
+
+                    const oldVal = next[r][c];
+                    const newVal = Math.round(oldVal * (1 - strength) + target * strength);
+
+                    // optional: only darken (do not brighten)
+                    next[r][c] = Math.min(oldVal, newVal);
+                    }
+                }
+            return next;
+        });
+    };
 
     const handleMouseDown = () => setIsMouseDown(true);
     const handleMouseUp = () => setIsMouseDown(false);
 
+    const [isMouseDown , setIsMouseDown] = useState(false);
+    const [gridColor, setGridColor] = useState(() => createGridArray(rows, cols));
+    const [radius, setRadius] = useState(3);
+    const [hardness, setHardness] = useState(1);
     return (
         <div 
             id="grid"
@@ -37,15 +136,32 @@ const Grid = ({rows = 28, cols = 28}) => {
             onMouseLeave={handleMouseUp}
             style={{
                 "--rows": rows,
-                "--cols": cols
+                "--cols": cols,
+                "--line_color": initial_border_color,
             }}
             >
-            {[...Array(rows * cols)].map((_, i ) => (
-                <Cell key={i} isMouseDown={isMouseDown} />
+            {gridColor.map((row, r ) => (
+                    row.map((cell, c) => (
+                    <Cell 
+                        key={r * cols + c}
+                        row={r}
+                        col={c}
+                        color={cell} // TODO fix this unsure what value should be color
+                        isMouseDown={isMouseDown}  
+                        onPaint={onPaint} 
+                    />
+                ))
             ))}
         </div>
     )
 }
+
+
+
+
+
+
+
 
 
 export default Grid;
