@@ -1,11 +1,15 @@
 import Grid from './components/HandwritingGrid';
+import ResetButton from './components/ResetButton';
+import ButtonProvider from './context/ButtonProvider';
 
 function App() {
   return (
-    <div className="App">
-      <Grid />
-      <p>hellow</p>
-    </div>
+    <ButtonProvider>
+      <div className="App">
+        <Grid />
+        <ResetButton/>
+      </div>
+    </ButtonProvider>
   );
 }
 

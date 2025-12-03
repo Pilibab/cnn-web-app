@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "../styles/HandwritingGrid.css";
+import ButtonContext from "../context/ButtonContext";
 
 const initial_cell_color = 255;
 const initial_border_color = 'black';
@@ -35,11 +36,18 @@ const Cell = ({ row, col, color, isMouseDown, onPaint }) =>  {
 
 const Grid = ({rows = 28, cols = 28}) => {
 
+    const { isReset, setResetBtn, isSubmit, setSubmitBtn } = useContext(ButtonContext);
+
+
     useEffect(() => {
+
+        if (isReset) {
+            resetGridArray()
+        }
         const onUp = () => setIsMouseDown(false);
         window.addEventListener("mouseup", onUp);
         return () => window.removeEventListener("mouseup", onUp);
-    }, []); 
+    }, [isReset]); 
     
     const createGridArray = (rows, cols) => {
         const gridArray = [];
