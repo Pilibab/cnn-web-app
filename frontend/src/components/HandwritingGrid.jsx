@@ -1,10 +1,11 @@
 import { useEffect, useState, useContext } from "react";
 import "../styles/HandwritingGrid.css";
 import ButtonContext from "../context/ButtonContext";
+import BrushSettingContext from "../context/BrushSettingContext";
 
 const initial_cell_color = 255;
 const initial_border_color = 'black';
-const on_down_color = 0;
+// const on_down_color = 0;
 
 // generate initial grid color array
 
@@ -37,6 +38,7 @@ const Cell = ({ row, col, color, isMouseDown, onPaint }) =>  {
 const Grid = ({rows = 28, cols = 28}) => {
 
     const { isReset, setResetBtn, isSubmit, setSubmitBtn } = useContext(ButtonContext);
+    const { radius, hardness} = useContext(BrushSettingContext);
 
 
     useEffect(() => {
@@ -134,8 +136,10 @@ const Grid = ({rows = 28, cols = 28}) => {
 
     const [isMouseDown , setIsMouseDown] = useState(false);
     const [gridColor, setGridColor] = useState(() => createGridArray(rows, cols));
-    const [radius, setRadius] = useState(3);
-    const [hardness, setHardness] = useState(1);
+
+
+
+    
     return (
         <div 
             id="grid"

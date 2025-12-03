@@ -5,7 +5,7 @@ import ButtonContext from "../context/ButtonContext";
 
 const ResetButton = () => {
 
-    const { isReset, setResetBtn, isSubmit, setSubmitBtn } = useContext(ButtonContext);
+    const { isReset, setResetBtn} = useContext(ButtonContext);
 
     const resetClicked = () => {
         setResetBtn(!isReset);
