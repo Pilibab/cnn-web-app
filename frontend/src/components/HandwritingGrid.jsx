@@ -4,7 +4,7 @@ import ButtonContext from "../context/ButtonContext";
 import BrushSettingContext from "../context/BrushSettingContext";
 
 const initial_cell_color = 255;
-const initial_border_color = 'black';
+const initial_border_color = 'rgba(179, 179, 179, 1)';
 // const on_down_color = 0;
 
 // generate initial grid color array

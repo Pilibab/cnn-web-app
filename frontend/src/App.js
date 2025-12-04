@@ -1,19 +1,20 @@
 import Grid from './components/HandwritingGrid';
+import PredictButton from './components/PredictButton';
 import ResetButton from './components/ResetButton';
-import BrushSettingProvider from './context/BrushSettingProvider';
-import ButtonProvider from './context/ButtonProvider';
+import SidePanel from './components/SidePanel';
+import './styles/App.css';
+
 
 function App() {
   return (
-    <BrushSettingProvider>
-        <ButtonProvider>
-          <div className="App">
-            <Grid />
-            <ResetButton/>
-          </div>
-        </ButtonProvider>    
-    </BrushSettingProvider>
+    <div class="App">
+      <Grid />
+      <SidePanel>
+        <ResetButton/>
+        <PredictButton/>      
+      </SidePanel>
 
+    </div>
   );
 }
 

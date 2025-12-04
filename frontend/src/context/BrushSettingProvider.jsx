@@ -12,10 +12,10 @@ const BrushSettingProvider = ({children}) => {
     };
     
     return (
-        <BrushSettingContext.provide value={packageData}>
+        <BrushSettingContext.Provider value={packageData}>
             {children}
-        </BrushSettingContext.provide>
-    )
+        </BrushSettingContext.Provider>
+    );
 }
 
-export default BrushSettingProvider
+export default BrushSettingProvider;
