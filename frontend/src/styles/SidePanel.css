@@ -1,6 +1,6 @@
 .side-panel {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 15px;
     padding: 20px;
     background-color: #ffffff;
