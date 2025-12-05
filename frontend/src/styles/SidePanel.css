@@ -8,4 +8,20 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     height: fit-content;
     border: 1px solid #e0e0e0;
+
+    /* Set a standard phone width */
+    width: 375px; 
+    
+    /* Set a standard phone height */
+    height: 467px;
+    
+    /* Optional: Center it or give it some room */
+    margin: 5px; 
+    /* --- CHANGES END HERE --- */
+}
+
+.btns-components {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
 }

@@ -21,8 +21,8 @@ const SidePanel = ({ children }) => {
                 valueLabelDisplay="auto"
                 marks
             />
-            
-            <div >
+
+            <div className='btns-components'>
                 {children}
             </div>
         </div>
