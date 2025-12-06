@@ -4,6 +4,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import BrushSettingProvider from './context/BrushSettingProvider';
 import ButtonProvider from './context/ButtonProvider';
+import GridProvider from './context/GridProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -11,7 +12,9 @@ root.render(
   <React.StrictMode>
     <BrushSettingProvider>
       <ButtonProvider>
-        <App />      
+        <GridProvider>
+          <App />      
+        </GridProvider>
       </ButtonProvider>    
     </BrushSettingProvider>
   </React.StrictMode>

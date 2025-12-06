@@ -2,8 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import "../styles/HandwritingGrid.css";
 import ButtonContext from "../context/ButtonContext";
 import BrushSettingContext from "../context/BrushSettingContext";
+import GridContext from "../context/GridContext";
 
-const initial_cell_color = 255;
 const initial_border_color = 'rgba(179, 179, 179, 1)';
 // const on_down_color = 0;
 
@@ -35,10 +35,11 @@ const Cell = ({ row, col, color, isMouseDown, onPaint }) =>  {
     );
 }
 
-const Grid = ({rows = 28, cols = 28}) => {
+const Grid = () => {
 
     const { isReset, setResetBtn, isSubmit, setSubmitBtn } = useContext(ButtonContext);
     const { radius, hardness} = useContext(BrushSettingContext);
+    const {gridColor, setGridColor, createGridArray, rows, cols} = useContext(GridContext);
 
 
     useEffect(() => {
@@ -50,21 +51,7 @@ const Grid = ({rows = 28, cols = 28}) => {
         window.addEventListener("mouseup", onUp);
         return () => window.removeEventListener("mouseup", onUp);
     }, [isReset]); 
-    
-    const createGridArray = (rows, cols) => {
-        const gridArray = [];
-        for (let r = 0; r < rows; r++) {
-            const row = [];
 
-            for (let c = 0; c < cols; c++) {
-                // ! single number? should i push it 3 times ?
-                row.push(initial_cell_color);
-
-            }       
-            gridArray.push(row);
-        }
-        return gridArray;
-    }
 
     const resetGridArray = () => setGridColor(createGridArray(rows, cols))
 
@@ -131,13 +118,12 @@ const Grid = ({rows = 28, cols = 28}) => {
         });
     };
 
+
+
     const handleMouseDown = () => setIsMouseDown(true);
     const handleMouseUp = () => setIsMouseDown(false);
 
     const [isMouseDown , setIsMouseDown] = useState(false);
-    const [gridColor, setGridColor] = useState(() => createGridArray(rows, cols));
-
-
 
     
     return (
