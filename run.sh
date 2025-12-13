@@ -2,7 +2,7 @@
 #!  this is run.sh file 
 
 # Start backend in background
-cd ../backend
+cd backend
 python server.py &
 BACKEND_PID=$!
 
